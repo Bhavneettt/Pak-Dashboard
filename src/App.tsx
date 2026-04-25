@@ -23,14 +23,14 @@ function App() {
       try {
         setLoading(true);
         // Fetch all events
-        const eventsRes = await fetch(`${API_BASE}/get_events.php`);
+        const eventsRes = await fetch(`${API_BASE}/get_events`);
         const eventsJson = await eventsRes.json();
         if (eventsJson.success) {
           setEvents(eventsJson.data);
         }
 
         // Fetch stats
-        const statsRes = await fetch(`${API_BASE}/stats.php`);
+        const statsRes = await fetch(`${API_BASE}/stats`);
         const statsJson = await statsRes.json();
         if (statsJson.success) {
           setStats(statsJson.data);
