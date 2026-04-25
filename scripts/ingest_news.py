@@ -151,7 +151,7 @@ def save_seen_url(url: str, seen: set) -> None:
 def get_existing_urls() -> set:
     """Pull all source_urls already stored in Supabase via PHP API."""
     try:
-        r = requests.get(f"{API_BASE}/get_events.php", timeout=10)
+        r = requests.get(f"{API_BASE}/get_events", timeout=10)
         if r.status_code == 200:
             return {row["source_url"] for row in r.json().get("data", [])}
     except Exception as e:
@@ -163,7 +163,12 @@ def post_event(event: dict) -> bool:
     """POST a structured event to add_event.php."""
     try:
         r = requests.post(f"{API_BASE}/add_event", json=event, timeout=10)
-        result = r.json()
+        try:
+            result = r.json()
+        except Exception as json_e:
+            log.error(f"  ❌ JSON error. Status: {r.status_code}, Response: {r.text[:200]}")
+            return False
+
         if result.get("success"):
             log.info(f"  ✅ Inserted id={result.get('id')} [{event['event_type']}] {event['title'][:60]}")
             return True
